@@ -135,6 +135,10 @@ const Nav=({go,page})=>(
 
 // ========== GOOGLE SHEETS WEBHOOK ==========
 const SHEET_URL="https://script.google.com/macros/s/AKfycbwETccUg7FWT3pNc6UhsauSN-qr-rRxlUtPvJmLEpw6VCIJIPoUUxiDlGMKtlEZ20O1/exec";
+const getDISC=(lp)=>[1,8,22].includes(lp)?"D":[3,5,9,11,33].includes(lp)?"I":[2,6].includes(lp)?"S":"C";
+const discFull={D:"Dominance — Người Chủ Đạo",I:"Influence — Người Ảnh Hưởng",S:"Steadiness — Người Ổn Định",C:"Conscientiousness — Người Tận Tâm"};
+const discDesc={D:"Quyết đoán, thẳng thắn, lãnh đạo bẩm sinh. Luôn hướng đến kết quả. Thích kiểm soát và ra quyết định nhanh.",I:"Sáng tạo, thu hút, truyền cảm hứng. Giao tiếp xuất sắc, networking giỏi. Yêu sự mới mẻ và kích thích.",S:"Kiên nhẫn, trung thành, đáng tin cậy. Lắng nghe tốt, giữ hòa khí. Ổn định và chăm sóc người xung quanh.",C:"Phân tích sâu, chi tiết, kỷ luật. Tiêu chuẩn cao, logic mạnh. Nghiên cứu kỹ trước khi quyết định."};
+const getNapAm=(y)=>{const a=[["Hải Trung Kim","Kim"],["Lô Trung Hỏa","Hỏa"],["Đại Lâm Mộc","Mộc"],["Lộ Bàng Thổ","Thổ"],["Kiếm Phong Kim","Kim"],["Sơn Đầu Hỏa","Hỏa"],["Giản Hạ Thủy","Thủy"],["Thành Đầu Thổ","Thổ"],["Bạch Lạp Kim","Kim"],["Dương Liễu Mộc","Mộc"],["Tuyền Trung Thủy","Thủy"],["Ốc Thượng Thổ","Thổ"],["Tích Lịch Hỏa","Hỏa"],["Tùng Bách Mộc","Mộc"],["Trường Lưu Thủy","Thủy"],["Sa Trung Kim","Kim"],["Sơn Hạ Hỏa","Hỏa"],["Bình Địa Mộc","Mộc"],["Bích Thượng Thổ","Thổ"],["Kim Bạch Kim","Kim"],["Phú Đăng Hỏa","Hỏa"],["Thiên Hà Thủy","Thủy"],["Đại Trạch Thổ","Thổ"],["Thoa Xuyến Kim","Kim"],["Tang Đố Mộc","Mộc"],["Đại Khê Thủy","Thủy"],["Sa Trung Thổ","Thổ"],["Thiên Thượng Hỏa","Hỏa"],["Thạch Lựu Mộc","Mộc"],["Đại Hải Thủy","Thủy"]];return a[Math.floor(((y-4)%60)/2)%30]||a[21]};
 const saveToSheet=async(data)=>{try{await fetch(SHEET_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})}catch(e){console.log("sheet save error",e)}};
 
 // ========== LEAD FORM — inline Tài Lộc result ==========
@@ -144,15 +148,23 @@ const LeadForm=({go})=>{
     if(!ln||!ld||!lm||!ly)return;
     const d=parseInt(ld),m=parseInt(lm),y=parseInt(ly);
     if(d<1||d>31||m<1||m>12||y<1900||y>2025)return;
-    const lp=N.lp(d,m,y),py=N.py(d,m,2026),data=LP[lp]||LP[9];
+    const lp=N.lp(d,m,y),py=N.py(d,m,2026),expr=N.nm(ln),soul=N.su(ln),pers=N.pe(ln),bday=N.bd(d);
+    const data=LP[lp]||LP[9],disc=getDISC(lp),napAm=getNapAm(y);
     const bizScore=lp===8?92:lp===22?90:lp===1?85:lp===5?80:65+lp*2;
     const investScore=py===8?95:py===1?85:py===5?82:60+py*3;
     const riskScore=Math.max(15,90-lp*5);
     const goldenM=[1+(lp+py)%4, 4+(lp%3), 8+(py%2)].map(v=>Math.min(v,12));
     const badM=[(7+lp%3),(11+py%2)].map(v=>v>12?v-12:v);
-    // Save to Google Sheets
-    saveToSheet({name:ln.trim(),phone:lp2,email:le,dob:`${ld}/${lm}/${ly}`,method:"Tài Lộc 2026",lifePath:lp,element:data.t,source:"home-lead"});
-    setRes({lp,py,data,name:ln.trim(),bizScore,investScore,riskScore,goldenM,badM});
+    saveToSheet({
+      name:ln.trim(),phone:lp2,email:le,dob:`${ld}/${lm}/${ly}`,
+      method:"Tài Lộc 2026",source:"home-lead",
+      lifePath:lp,lifePath_name:data.t,expression:expr,soul:soul,personality:pers,birthday:bday,personalYear:py,
+      disc:disc,disc_name:discFull[disc],disc_desc:discDesc[disc],
+      napAm:napAm[0],element:napAm[1],
+      strengths:data.s,challenges:data.c,career:data.w,finance:data.f,
+      bizScore,investScore,riskScore,goldenMonths:goldenM.join(","),cautionMonths:badM.join(",")
+    });
+    setRes({lp,py,expr,soul,pers,bday,data,name:ln.trim(),bizScore,investScore,riskScore,goldenM,badM,disc,napAm});
   };
   const fi={background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,borderRadius:10,padding:"12px 14px",color:T.head,fontSize:14,fontFamily:T.sans,outline:"none",textAlign:"center"};
 
@@ -715,10 +727,17 @@ const ThanSo=({go})=>{
     if(!name||!day||!month||!year||!email)return;
     const d=parseInt(day),m=parseInt(month),y=parseInt(year);
     if(d<1||d>31||m<1||m>12||y<1900||y>2025)return;
-    const lp=N.lp(d,m,y),py=N.py(d,m,2026),expr=N.nm(name),soul=N.su(name);
-    // Save to Google Sheets
-    saveToSheet({name:name.trim(),phone:phone,email:email,dob:`${day}/${month}/${year}`,method:methods.find(mm=>mm.k===method)?.label||method,lifePath:lp,element:(LP[lp]||LP[9]).t,source:"ban-the"});
-    setRes({lp,py,expr,soul,data:LP[lp]||LP[9],name:name.trim()});setSent(true);
+    const lp=N.lp(d,m,y),py=N.py(d,m,2026),expr=N.nm(name),soul=N.su(name),pers=N.pe(name),bday=N.bd(d);
+    const data=LP[lp]||LP[9],disc=getDISC(lp),napAm=getNapAm(y);
+    saveToSheet({
+      name:name.trim(),phone:phone,email:email,dob:`${day}/${month}/${year}`,
+      method:methods.find(mm=>mm.k===method)?.label||method,source:"ban-the",
+      lifePath:lp,lifePath_name:data.t,expression:expr,soul:soul,personality:pers,birthday:bday,personalYear:py,
+      disc:disc,disc_name:discFull[disc],disc_desc:discDesc[disc],
+      napAm:napAm[0],element:napAm[1],
+      strengths:data.s,challenges:data.c,career:data.w,finance:data.f
+    });
+    setRes({lp,py,expr,soul,pers,bday,data:data,name:name.trim(),disc,napAm});setSent(true);
   };
   const methods=[
     {k:"thanso",label:"Thần Số Học",icon:"#",desc:"Bản đồ số mệnh từ tên & ngày sinh",free:true},
