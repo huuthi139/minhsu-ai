@@ -221,6 +221,102 @@ const LeadForm=({go})=>{
       </div>
     </div>
 
+    {/* ===== THẦN SỐ HỌC — Ý NGHĨA CÁC SỐ ===== */}
+    <div style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:12,padding:"18px 16px",marginBottom:14}}>
+      <div style={{color:T.gold,fontSize:9,fontWeight:700,letterSpacing:1.5,marginBottom:14}}>🔢 BẢN ĐỒ THẦN SỐ HỌC</div>
+      {/* Number grid */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>
+        {[
+          {l:"Số Chủ Đạo",v:res.lp,c:T.gold,desc:"Con số quan trọng nhất — định hình sứ mệnh cuộc đời và con đường bạn đi"},
+          {l:"Số Sứ Mệnh",v:res.expr,c:T.purple,desc:"Tài năng bẩm sinh và cách bạn thể hiện ra thế giới bên ngoài"},
+          {l:"Số Linh Hồn",v:res.soul,c:T.blue,desc:"Khao khát sâu thẳm bên trong — điều thực sự khiến bạn hạnh phúc"},
+          {l:"Số Nhân Cách",v:res.pers,c:T.orange,desc:"Ấn tượng đầu tiên bạn tạo cho người khác — mặt nạ xã hội"},
+          {l:"Số Ngày Sinh",v:res.bday,c:T.accent,desc:"Tài năng đặc biệt được ban tặng — thế mạnh tự nhiên"},
+          {l:"Năm CÁ Nhân",v:res.py,c:T.red,desc:"Năng lượng chủ đạo năm 2026 — chu kỳ bạn đang ở"},
+        ].map((n,i)=><div key={i} style={{background:`${n.c}08`,border:`1px solid ${n.c}18`,borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+          <div style={{fontSize:8,color:T.muted,letterSpacing:1,marginBottom:4}}>{n.l}</div>
+          <div style={{fontFamily:T.serif,fontSize:26,fontWeight:800,color:n.c,lineHeight:1}}>{n.v}</div>
+        </div>)}
+      </div>
+
+      {/* Ý nghĩa Số Chủ Đạo */}
+      <div style={{marginBottom:14}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+          <div style={{fontFamily:T.serif,fontSize:28,fontWeight:800,color:T.gold}}>{res.lp}</div>
+          <div><div style={{color:T.gold,fontSize:11,fontWeight:700}}>SỐ CHỦ ĐẠO — {res.data.t}</div>
+          <div style={{color:T.muted,fontSize:10}}>Con đường định mệnh của bạn</div></div>
+        </div>
+        <p style={{color:T.body,fontSize:12,lineHeight:1.7,marginBottom:8}}>
+          {res.lp===1?"Bạn sinh ra để DẪN ĐẦU. Số 1 mang năng lượng khai phá — là người đi đầu, dám nghĩ dám làm. Có khả năng tự lập từ sớm, sức mạnh ý chí rất lớn. Phù hợp khởi nghiệp, lãnh đạo, sáng tạo.":
+          res.lp===2?"Bạn là bậc thầy ngoại giao — biết cách làm trung gian, hòa giải mâu thuẫn. Trực giác gần như siêu nhiên, cảm nhận được điều sắp xảy ra. Phát huy tối đa trong vai trò cộng sự, đối tác.":
+          res.lp===3?"Bạn là nghệ sĩ bẩm sinh — có khả năng biến ý tưởng thành sản phẩm thu hút. Duyên dáng, truyền cảm hứng cho mọi người. Tiềm năng lớn trong personal branding và content.":
+          res.lp===4?"Bạn là kiến trúc sư cuộc đời — xây dựng nền tảng vững chắc cho mọi thứ. Cực kỳ đáng tin cậy, nói là làm. Kiên trì phi thường, rất giỏi scale hệ thống.":
+          res.lp===5?"Bạn là linh hồn tự do — thích ứng cực nhanh, đa tài, học gì cũng nhanh. Cuốn hút tự nhiên vì mang năng lượng sôi động. Portfolio career phù hợp nhất.":
+          res.lp===6?"Bạn là trái tim gia đình — sẵn sàng hy sinh vì người thân, có mắt thẩm mỹ tốt, chữa lành người khác bằng sự hiện diện. Kinh doanh dịch vụ, chăm sóc rất thuận lợi.":
+          res.lp===7?"Bạn là triết gia — tìm kiếm ý nghĩa sâu xa trong mọi thứ. Phân tích phi thường, trực giác gần siêu nhiên. Phù hợp vai trò chuyên gia, thought leader.":
+          res.lp===8?"Bạn là vua tài chính — hiểu tiền bạc và quyền lực một cách bản năng. Tham vọng lớn VÀ có khả năng đạt được. Sinh ra để xây dựng đế chế.":
+          res.lp===9?"Bạn là linh hồn già — mang tầm nhìn toàn cầu, vì nhân loại. Vị tha không tính toán. Khi tìm được meaning, tiền sẽ tự đến.":
+          res.lp===11?"Bạn mang rung động cao nhất — gần như 'download' thông tin từ vũ trụ. Truyền cảm hứng chỉ bằng sự hiện diện. Sứ mệnh là khai sáng và dẫn đường.":
+          res.lp===22?"Bạn kết hợp trực giác với thực tế — biến giấc mơ lớn nhất thành hiện thực. Xây dựng những thứ tồn tại qua nhiều thế hệ. Think in decades.":
+          "Bạn mang tình yêu vô điều kiện ở mức cosmic — chữa lành chỉ bằng sự hiện diện. Share wisdom through whatever medium resonates."}
+        </p>
+      </div>
+
+      {/* Ý nghĩa Số Sứ Mệnh + Linh Hồn */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        <div style={{background:`${T.purple}06`,border:`1px solid ${T.purple}12`,borderRadius:8,padding:"12px 10px"}}>
+          <div style={{color:T.purple,fontSize:9,fontWeight:700,letterSpacing:1,marginBottom:4}}>SỐ SỨ MỆNH: {res.expr}</div>
+          <p style={{color:T.body,fontSize:11,lineHeight:1.6}}>
+            {res.expr<=3?"Sứ mệnh biểu đạt và sáng tạo — bạn sinh ra để truyền đạt ý tưởng, truyền cảm hứng. Nghệ thuật, viết lách, giảng dạy là sân chơi.":
+            res.expr<=6?"Sứ mệnh xây dựng và phục vụ — bạn tạo ra giá trị thông qua hệ thống, tổ chức, chăm sóc. Kinh doanh bền vững là thế mạnh.":
+            res.expr<=9?"Sứ mệnh phân tích và dẫn dắt — bạn thấy bức tranh lớn mà người khác bỏ qua. Chiến lược gia, nhà đầu tư, mentor.":
+            "Sứ mệnh Master — năng lượng đặc biệt, tầm ảnh hưởng vượt xa cá nhân."}
+          </p>
+        </div>
+        <div style={{background:`${T.blue}06`,border:`1px solid ${T.blue}12`,borderRadius:8,padding:"12px 10px"}}>
+          <div style={{color:T.blue,fontSize:9,fontWeight:700,letterSpacing:1,marginBottom:4}}>SỐ LINH HỒN: {res.soul}</div>
+          <p style={{color:T.body,fontSize:11,lineHeight:1.6}}>
+            {res.soul<=3?"Linh hồn khao khát tự do và biểu đạt — bạn cần không gian sáng tạo, cần được lắng nghe, cần cảm giác đang SỐNG thật sự.":
+            res.soul<=6?"Linh hồn khao khát ổn định và kết nối — bạn cần mái ấm, cần người thân bên cạnh, cần biết mình thuộc về đâu.":
+            res.soul<=9?"Linh hồn khao khát ý nghĩa và sự sâu sắc — bạn cần hiểu WHY, cần mục đích lớn hơn bản thân, cần sự thật.":
+            "Linh hồn Master — khao khát khai sáng, chữa lành, để lại di sản cho nhân loại."}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* ===== DỰ ĐOÁN TÀI LỘC 2026 CHI TIẾT ===== */}
+    <div style={{background:`${T.gold}04`,border:`1px solid ${T.gold}18`,borderRadius:12,padding:"18px 16px",marginBottom:14}}>
+      <div style={{color:T.gold,fontSize:9,fontWeight:700,letterSpacing:1.5,marginBottom:12}}>🔥 DỰ ĐOÁN TÀI LỘC 2026 — NĂM BÍNH NGỌ (THIÊN HÀ THỦY)</div>
+      <p style={{color:T.body,fontSize:12,lineHeight:1.7,marginBottom:12}}>
+        Năm 2026 là Universal Year {1+0} = 1 — năm KHỞI TẠO. Mọi hành động năm nay sẽ define cả thập kỷ tới. Với Năm Cá Nhân <strong style={{color:T.accent}}>{res.py}</strong>, năng lượng tài lộc của bạn tập trung vào:
+      </p>
+      <p style={{color:T.body,fontSize:12,lineHeight:1.7,marginBottom:12}}>
+        {res.py===1?"KHỞI ĐẦU MỚI — Gieo hạt cho cả năm. Tháng 1-3 là window vàng để bắt đầu dự án mới, thay đổi career, hoặc launch sản phẩm.":
+        res.py===2?"HỢP TÁC — Tài lộc đến từ partnership. Đừng làm một mình. Tìm đối tác bổ trợ, ký kết liên doanh, merge resources.":
+        res.py===3?"SÁNG TẠO & BIỂU ĐẠT — Content, marketing, personal brand = gold mine. Launch channel, viết sách, ra course. Monetize tài năng.":
+        res.py===4?"XÂY NỀN TẢNG — Không phải năm bùng nổ nhưng là năm quyết định. Xây hệ thống, quy trình, automation. Thu nhập passive.":
+        res.py===5?"THAY ĐỔI & CƠ HỘI — Cơ hội bất ngờ từ nguồn không ngờ. Linh hoạt, đa dạng hóa. Diversify income, đừng all-in.":
+        res.py===6?"DỊCH VỤ & GIA ĐÌNH — Kinh doanh F&B, wellness, giáo dục cực thuận. Đầu tư cho gia đình, BĐS cho thuê.":
+        res.py===7?"NGHIÊN CỨU & CHUYÊN MÔN — Consulting, teaching, IP. Monetize expertise. Đầu tư dựa trên research + intuition.":
+        res.py===8?"NĂM VÀNG TÀI LỘC! Ký kết deal lớn, mở rộng quy mô, đầu tư mạnh tay. Cho đi 8% thu nhập để kích karma.":
+        res.py===9?"HOÀN THÀNH CHU KỲ — Buông bỏ cái cũ để nhận mới. Close nợ, bán tài sản không dùng, launch social enterprise.":
+        "Master Year — năng lượng đặc biệt, follow intuition, manifest abundance."}
+      </p>
+      {/* Q1-Q4 roadmap */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+        {[
+          {q:"Q1 (T1-3)",icon:"🌱",text:res.py<=3?"Khởi động mạnh — launch, khai trương, ký kết":"Chuẩn bị & lên kế hoạch — research, networking"},
+          {q:"Q2 (T4-6)",icon:"☀️",text:res.py<=5?"Mở rộng & scale — recruit, invest, grow":"Ổn định hóa — tối ưu hệ thống, tăng hiệu suất"},
+          {q:"Q3 (T7-9)",icon:"🍂",text:"Thu hoạch đợt 1 — close deal, collect revenue, review ROI"},
+          {q:"Q4 (T10-12)",icon:"❄️",text:res.py>=7?"Thu hoạch lớn & chuẩn bị năm mới":"Tổng kết, tối ưu, đặt mục tiêu 2027"},
+        ].map((q,i)=><div key={i} style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:8,padding:"10px 10px"}}>
+          <div style={{fontSize:10,color:T.gold,fontWeight:700,marginBottom:4}}>{q.icon} {q.q}</div>
+          <p style={{color:T.body,fontSize:11,lineHeight:1.5}}>{q.text}</p>
+        </div>)}
+      </div>
+    </div>
+
     {/* Quick business insight */}
     <div style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:12,padding:"14px 16px",marginBottom:14}}>
       <div style={{color:T.accent,fontSize:9,fontWeight:700,letterSpacing:1.5,marginBottom:6}}>💼 NHẬN ĐỊNH KINH DOANH 2026</div>
