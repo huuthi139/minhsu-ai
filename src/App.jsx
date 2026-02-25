@@ -133,21 +133,25 @@ const Nav=({go,page})=>(
   </nav>
 );
 
+// ========== GOOGLE SHEETS WEBHOOK ==========
+const SHEET_URL="https://script.google.com/macros/s/AKfycbwETccUg7FWT3pNc6UhsauSN-qr-rRxlUtPvJmLEpw6VCIJIPoUUxiDlGMKtlEZ20O1/exec";
+const saveToSheet=async(data)=>{try{await fetch(SHEET_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})}catch(e){console.log("sheet save error",e)}};
+
 // ========== LEAD FORM — inline Tài Lộc result ==========
 const LeadForm=({go})=>{
-  const[ln,setLn]=useState("");const[ld,setLd]=useState("");const[lm,setLm]=useState("");const[ly,setLy]=useState("");const[le,setLe]=useState("");const[res,setRes]=useState(null);
+  const[ln,setLn]=useState("");const[lp2,setLp2]=useState("");const[ld,setLd]=useState("");const[lm,setLm]=useState("");const[ly,setLy]=useState("");const[le,setLe]=useState("");const[res,setRes]=useState(null);
   const submit=()=>{
     if(!ln||!ld||!lm||!ly)return;
     const d=parseInt(ld),m=parseInt(lm),y=parseInt(ly);
     if(d<1||d>31||m<1||m>12||y<1900||y>2025)return;
     const lp=N.lp(d,m,y),py=N.py(d,m,2026),data=LP[lp]||LP[9];
-    // Tính điểm tài lộc thiên về kinh doanh
     const bizScore=lp===8?92:lp===22?90:lp===1?85:lp===5?80:65+lp*2;
     const investScore=py===8?95:py===1?85:py===5?82:60+py*3;
     const riskScore=Math.max(15,90-lp*5);
-    // Tháng hoàng đạo & kỵ
     const goldenM=[1+(lp+py)%4, 4+(lp%3), 8+(py%2)].map(v=>Math.min(v,12));
     const badM=[(7+lp%3),(11+py%2)].map(v=>v>12?v-12:v);
+    // Save to Google Sheets
+    saveToSheet({name:ln.trim(),phone:lp2,email:le,dob:`${ld}/${lm}/${ly}`,method:"Tài Lộc 2026",lifePath:lp,element:data.t,source:"home-lead"});
     setRes({lp,py,data,name:ln.trim(),bizScore,investScore,riskScore,goldenM,badM});
   };
   const fi={background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,borderRadius:10,padding:"12px 14px",color:T.head,fontSize:14,fontFamily:T.sans,outline:"none",textAlign:"center"};
@@ -361,6 +365,7 @@ const LeadForm=({go})=>{
   return <div style={{position:"relative",maxWidth:500,margin:"0 auto"}}>
     <div style={{display:"grid",gridTemplateColumns:"1fr",gap:10,marginBottom:12}}>
       <input value={ln} onChange={e=>setLn(e.target.value)} placeholder="Họ và tên" style={{...fi,textAlign:"left"}} />
+      <input value={lp2} onChange={e=>setLp2(e.target.value)} placeholder="Số điện thoại" type="tel" style={{...fi,textAlign:"left"}} />
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
         <input value={ld} onChange={e=>setLd(e.target.value)} placeholder="Ngày" type="number" style={fi} />
         <input value={lm} onChange={e=>setLm(e.target.value)} placeholder="Tháng" type="number" style={fi} />
@@ -703,7 +708,7 @@ const Home=({go})=>{
 
 // ========== THAN SO PAGE ==========
 const ThanSo=({go})=>{
-  const[name,setName]=useState("");const[day,setDay]=useState("");const[month,setMonth]=useState("");const[year,setYear]=useState("");const[email,setEmail]=useState("");
+  const[name,setName]=useState("");const[phone,setPhone]=useState("");const[day,setDay]=useState("");const[month,setMonth]=useState("");const[year,setYear]=useState("");const[email,setEmail]=useState("");
   const[method,setMethod]=useState("thanso");const[sent,setSent]=useState(false);const[res,setRes]=useState(null);
   const inp={width:"100%",background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`,borderRadius:10,padding:"13px 16px",color:T.head,fontSize:15,fontFamily:T.sans,outline:"none",boxSizing:"border-box"};
   const submit=()=>{
@@ -711,6 +716,8 @@ const ThanSo=({go})=>{
     const d=parseInt(day),m=parseInt(month),y=parseInt(year);
     if(d<1||d>31||m<1||m>12||y<1900||y>2025)return;
     const lp=N.lp(d,m,y),py=N.py(d,m,2026),expr=N.nm(name),soul=N.su(name);
+    // Save to Google Sheets
+    saveToSheet({name:name.trim(),phone:phone,email:email,dob:`${day}/${month}/${year}`,method:methods.find(mm=>mm.k===method)?.label||method,lifePath:lp,element:(LP[lp]||LP[9]).t,source:"ban-the"});
     setRes({lp,py,expr,soul,data:LP[lp]||LP[9],name:name.trim()});setSent(true);
   };
   const methods=[
@@ -863,6 +870,8 @@ const ThanSo=({go})=>{
           </div>
           <label style={{display:"block",fontSize:10.5,color:T.muted,marginBottom:6,letterSpacing:1.5}}>HỌ VÀ TÊN</label>
           <input value={name} onChange={e=>setName(e.target.value)} placeholder="Nguyen Van An" style={{...inp,marginBottom:16}} />
+          <label style={{display:"block",fontSize:10.5,color:T.muted,marginBottom:6,letterSpacing:1.5}}>SỐ ĐIỆN THOẠI</label>
+          <input value={phone} onChange={e=>setPhone(e.target.value)} placeholder="0901 234 567" type="tel" style={{...inp,marginBottom:16}} />
           <label style={{display:"block",fontSize:10.5,color:T.muted,marginBottom:6,letterSpacing:1.5}}>NGÀY SINH (DƯƠNG LỊCH)</label>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:16}}>
             {[[day,setDay,"Ngày"],[month,setMonth,"Tháng"],[year,setYear,"Năm"]].map(([v,s,p],i)=><input key={i} value={v} onChange={e=>s(e.target.value)} placeholder={p} type="number" style={{...inp,textAlign:"center"}} />)}
